@@ -1,0 +1,23 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block content %}
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 style="margin-top: 0; font-size: 24px;">🎥 Video Upload Center</h2>
+        <p style="margin-bottom: 15px; opacity: 0.9;">Quick access to specialized video upload tools for large files</p>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <a href="/api/admin/video-upload/" 
+               style="background: rgba(255,255,255,0.2); color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); display: inline-block; backdrop-filter: blur(10px);">
+                📤 Upload Large Video Files
+            </a>
+            <a href="/admin/api/subjectrecordingvideo/" 
+               style="background: rgba(255,255,255,0.2); color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); display: inline-block; backdrop-filter: blur(10px);">
+                📋 Manage Video Records
+            </a>
+        </div>
+        <p style="margin-top: 15px; margin-bottom: 0; font-size: 12px; opacity: 0.8;">
+            💡 For files over 100MB, use the dedicated upload tool to bypass Cloudflare limits
+        </p>
+    </div>
+    {{ block.super }}
+{% endblock %}

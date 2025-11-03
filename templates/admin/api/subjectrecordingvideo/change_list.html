@@ -1,0 +1,25 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    {% if multipart_upload_button %}
+        <li>{{ multipart_upload_button|safe }}</li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if multipart_upload_button %}
+        <div style="background: #f0f8ff; border: 1px solid #b0d4f1; padding: 15px; margin-bottom: 20px; border-radius: 4px; border-left: 4px solid #417690;">
+            <h3 style="margin-top: 0; color: #417690;">📹 Large Video Upload Available</h3>
+            <p style="margin-bottom: 10px;">For video files larger than 100MB or if you experience upload issues, use our specialized multipart upload tool that bypasses size limits:</p>
+            <a href="/api/admin/video-upload/" class="button" style="background: #417690; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+                🎥 Upload Large Video File
+            </a>
+            <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                This tool supports files of any size and provides progress tracking during upload.
+            </p>
+        </div>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

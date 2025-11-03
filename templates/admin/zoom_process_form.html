@@ -1,0 +1,44 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Process Pending Recordings' %} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url 'admin:api_zoomrecording_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {% trans 'Process Pending Recordings' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="form-row">
+    <h1>{% trans 'Process Pending Recordings' %}</h1>
+    
+    <div class="help">
+        {% if pending_count > 0 %}
+            <p>There are currently <strong>{{ pending_count }}</strong> pending recording(s) waiting to be processed.</p>
+            <p>This will download the recordings from Zoom and upload them to R2 storage, then create SubjectRecordingVideo entries where applicable.</p>
+            <p><strong>Warning:</strong> This process may take some time depending on the file sizes and number of recordings.</p>
+        {% else %}
+            <p>There are currently no pending recordings to process.</p>
+        {% endif %}
+    </div>
+    
+    {% if pending_count > 0 %}
+    <form method="post" class="aligned">
+        {% csrf_token %}
+        
+        <div class="submit-row">
+            <input type="submit" value="{% trans 'Process All Pending Recordings' %}" class="default" />
+            <a href="../" class="button cancel-link">{% trans 'Cancel' %}</a>
+        </div>
+    </form>
+    {% else %}
+    <div class="submit-row">
+        <a href="../" class="button cancel-link">{% trans 'Back to Recordings' %}</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

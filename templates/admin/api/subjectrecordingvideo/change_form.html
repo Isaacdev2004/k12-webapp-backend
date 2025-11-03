@@ -1,0 +1,22 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static %}
+
+{% block content %}
+    {% if multipart_upload_button %}
+        {{ multipart_upload_button|safe }}
+    {% endif %}
+    {{ block.super }}
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    {% if multipart_upload_button %}
+        <div style="margin-top: 20px; padding: 15px; background: #f0f8ff; border: 1px solid #b0d4f1; border-radius: 4px;">
+            <h4 style="margin-top: 0; color: #417690;">Alternative Upload Method</h4>
+            <p style="margin-bottom: 10px;">If your video file is large or upload fails, try our dedicated upload tool:</p>
+            <a href="/api/admin/video-upload/" class="button" style="background: #417690; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">
+                Upload with Multipart Tool
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

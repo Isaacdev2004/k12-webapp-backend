@@ -1,0 +1,336 @@
+/* Define CSS variables for light and dark themes */
+:root, [data-theme="light"] {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --header-bg: #f4f4f4;
+    --border-color: #dcdcdc;
+    --hover-bg: #f1f1f1;
+    --alternate-row-bg: #f9f9f9;
+    --question-text-color: #2c3e50;
+    --answer-color: #2980b9;
+    --weight-color: #e67e22;
+    --button-bg: #28a745;
+    --button-hover-bg: #218838;
+    --delete-bg: #dc3545;
+    --delete-hover-bg: #c82333;
+    --change-bg: #007bff;
+    --change-hover-bg: #0056b3;
+    --input-bg: #ffffff;
+    --input-border: #cccccc;
+    --label-color: #444444;
+}
+
+/* Dark mode variables */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #1a1a1a;
+        --text-color: #e0e0e0;
+        --header-bg: #2c2c2c;
+        --border-color: #444444;
+        --hover-bg: #333333;
+        --alternate-row-bg: #252525;
+        --question-text-color: #d1d5db;
+        --answer-color: #60a5fa;
+        --weight-color: #f59e0b;
+        --button-bg: #16a34a;
+        --button-hover-bg: #15803d;
+        --delete-bg: #b91c1c;
+        --delete-hover-bg: #991b1b;
+        --change-bg: #2563eb;
+        --change-hover-bg: #1d4ed8;
+        --input-bg: #2d2d2d;
+        --input-border: #555555;
+        --label-color: #d1d5db;
+    }
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --header-bg: #2c2c2c;
+    --border-color: #444444;
+    --hover-bg: #333333;
+    --alternate-row-bg: #252525;
+    --question-text-color: #d1d5db;
+    --answer-color: #60a5fa;
+    --weight-color: #f59e0b;
+    --button-bg: #16a34a;
+    --button-hover-bg: #15803d;
+    --delete-bg: #b91c1c;
+    --delete-hover-bg: #991b1b;
+    --change-bg: #2563eb;
+    --change-hover-bg: #1d4ed8;
+    --input-bg: #2d2d2d;
+    --input-border: #555555;
+    --label-color: #d1d5db;
+}
+
+/* General styling for inline-related sections */
+.admin .inline-related {
+    margin: 20px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Inline header styling */
+.admin .inline-related h3 {
+    background: var(--header-bg);
+    padding: 12px;
+    margin: 0;
+    border-radius: 4px 4px 0 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.admin .inline-related h3:hover {
+    background: var(--hover-bg);
+}
+
+/* Styling for inline actions (Change, Delete) */
+.admin .inline-related .inlinechangelink,
+.admin .inline-related .inline-deletelink {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 5px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background-color 0.2s;
+}
+
+.admin .inline-related .inlinechangelink {
+    background: var(--change-bg);
+    color: white;
+}
+
+.admin .inline-related .inlinechangelink:hover {
+    background: var(--change-hover-bg);
+}
+
+.admin .inline-related .inline-deletelink {
+    background: var(--delete-bg);
+    color: white;
+}
+
+.admin .inline-related .inline-deletelink:hover {
+    background: var(--delete-hover-bg);
+}
+
+.admin .inline-related .delete label {
+    color: var(--text-color);
+}
+
+/* Tabular layout (for MCQQuestionInline) */
+.admin .inline-related table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+.admin .inline-related th {
+    background: var(--header-bg);
+    color: var(--text-color);
+    font-weight: 600;
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.admin .inline-related td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+    color: var(--text-color);
+}
+
+.admin .inline-related tr:nth-child(even) {
+    background: var(--alternate-row-bg);
+}
+
+.admin .inline-related tr:hover {
+    background: var(--hover-bg);
+    transition: background-color 0.2s;
+}
+
+/* Field-specific styling for tabular layout */
+.admin .inline-related td.field-question_text {
+    font-weight: 500;
+    color: var(--question-text-color);
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin .inline-related td.field-answer {
+    font-weight: bold;
+    color: var(--answer-color);
+}
+
+.admin .inline-related td.field-weight {
+    color: var(--weight-color);
+}
+
+.admin .inline-related td.field-question_image_thumbnail img {
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.admin .inline-related td.field-question_image_thumbnail img:hover {
+    transform: scale(1.1);
+}
+
+.admin .inline-related td.field-question_image_thumbnail a {
+    text-decoration: none;
+}
+
+/* Stacked layout (for MockTestQuestionInline) */
+.admin .inline-related.has_original.dynamic-questions {
+    padding: 15px;
+}
+
+.admin .inline-related .module.aligned {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.admin .inline-related .form-row {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-color);
+}
+
+/* Linear layout for flex-container */
+.admin .inline-related .flex-container {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+}
+
+.admin .inline-related .flex-container label {
+    display: block;
+    font-weight: 500;
+    color: var(--label-color);
+    margin-bottom: 5px;
+}
+
+.admin .inline-related .flex-container label.required::after {
+    content: '*';
+    color: #dc3545;
+    margin-left: 4px;
+}
+
+.admin .inline-related .flex-container textarea,
+.admin .inline-related .flex-container input {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    padding: 8px;
+    color: var(--text-color);
+    width: 100%;
+    max-width: 400px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.admin .inline-related .flex-container textarea.vLargeTextField {
+    min-height: 60px; /* Adjusted for usability */
+    max-height: 120px; /* Prevent excessive height */
+    resize: vertical;
+    overflow-y: auto;
+}
+
+.admin .inline-related .flex-container input[type="number"] {
+    max-width: 100px;
+}
+
+.admin .inline-related .flex-container textarea:focus,
+.admin .inline-related .flex-container input:focus {
+    border-color: var(--change-bg);
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+}
+
+/* Import button styling */
+.admin a.button {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--button-bg);
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 10px 0;
+    transition: background-color 0.2s;
+}
+
+.admin a.button:hover {
+    background: var(--button-hover-bg);
+}
+
+/* Pagination styling (for django-admin-inline-paginator) */
+.admin .paginator {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.admin .paginator a {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 3px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--change-bg);
+    text-decoration: none;
+}
+
+.admin .paginator a:hover {
+    background: var(--hover-bg);
+}
+
+.admin .paginator .this-page {
+    background: var(--change-bg);
+    color: white;
+    border-color: var(--change-bg);
+}
+.vLargeTextField, .vXMLLargeTextField {
+  width: 100% !important;
+  height: 40px !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .admin .inline-related table {
+        display: block;
+        overflow-x: auto;
+    }
+    .admin .inline-related th,
+    .admin .inline-related td {
+        min-width: 100px;
+    }
+    .admin .inline-related td.field-question_text {
+        max-width: 200px;
+    }
+    .admin .inline-related .flex-container {
+        max-width: 100%;
+    }
+    .admin .inline-related .flex-container textarea,
+    .admin .inline-related .flex-container input {
+        max-width: none;
+    }
+}

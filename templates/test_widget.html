@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test R2 Upload Widget</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-row { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Test R2 Upload Widget</h1>
+    
+    <form>
+        {% csrf_token %}
+        <div class="form-row">
+            <label for="id_video_url">Video URL:</label>
+            <input type="text" name="video_url" id="id_video_url" placeholder="https://..." />
+        </div>
+        
+        <div id="r2-upload-widget-id_video_url" class="r2-upload-widget" style="border:1px solid #e5e7eb; padding:12px; border-radius:6px; margin-top:6px;">
+            <div style="margin-bottom:8px;">
+                <label><strong>Direct Upload to R2 (multipart)</strong></label>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
+                <input type="file" class="r2-file" />
+                <input type="text" class="r2-key" placeholder="videos/yourfile.mp4" style="min-width:280px;" />
+                <button type="button" class="button r2-start">Upload</button>
+                <button type="button" class="button r2-abort" disabled>Abort</button>
+            </div>
+            <progress class="r2-prog" value="0" max="100" style="width:100%; height:14px;"></progress>
+            <div class="r2-log" style="white-space:pre; font-family:monospace; font-size:12px; margin-top:8px;"></div>
+            <div style="margin-top:8px; color:#6b7280;">After upload completes, the URL will be written into the field above.</div>
+        </div>
+    </form>
+
+    <script>
+    (function(){
+        const root = document.getElementById('r2-upload-widget-id_video_url');
+        if (!root) {
+            console.error('Root element not found');
+            return;
+        }
+        const logEl = root.querySelector('.r2-log');
+        const prog = root.querySelector('.r2-prog');
+        const urlInput = document.getElementById('id_video_url');
+        const keyEl = root.querySelector('.r2-key');
+        const fileEl = root.querySelector('.r2-file');
+        const startBtn = root.querySelector('.r2-start');
+        const abortBtn = root.querySelector('.r2-abort');
+        let uploadId = null; let parts = []; let aborted = false;
+
+        console.log('Widget initialized:', {
+            root: !!root,
+            logEl: !!logEl,
+            prog: !!prog,
+            urlInput: !!urlInput,
+            keyEl: !!keyEl,
+            fileEl: !!fileEl,
+            startBtn: !!startBtn,
+            abortBtn: !!abortBtn
+        });
+
+        function log(msg) { 
+            console.log('Upload log:', msg);
+            if (logEl) { 
+                logEl.textContent += msg + "\n"; 
+                logEl.scrollTop = logEl.scrollHeight; 
+            } 
+        }
+        
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        
+        async function postJson(url, body) {
+            const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') }, body: JSON.stringify(body), credentials: 'include' });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        }
+        
+        async function getJson(url) {
+            const res = await fetch(url, { credentials: 'include' });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        }
+        
+        function inferKey(file) {
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
+            return 'videos/' + safeName;
+        }
+        
+        async function startUpload() {
+            console.log('Upload started');
+            aborted = false; parts = []; if (prog) prog.value = 0; if (logEl) logEl.textContent = '';
+            const file = fileEl && fileEl.files && fileEl.files[0];
+            if (!file) { 
+                alert('Choose a file'); 
+                return; 
+            }
+            if (keyEl && !keyEl.value) keyEl.value = inferKey(file);
+            if (startBtn) startBtn.disabled = true; 
+            if (abortBtn) abortBtn.disabled = false;
+            
+            try {
+                log('Starting upload for file: ' + file.name + ' (' + file.size + ' bytes)');
+                const init = await postJson('/api/uploads/multipart/initiate/', { key: keyEl.value, contentType: file.type || 'application/octet-stream' });
+                uploadId = init.uploadId; 
+                log('Initiated ' + uploadId);
+                
+                const chunkSize = 25 * 1024 * 1024; // 25MB
+                const totalParts = Math.ceil(file.size / chunkSize);
+                
+                for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
+                    if (aborted) throw new Error('aborted');
+                    const start = (partNumber - 1) * chunkSize;
+                    const end = Math.min(start + chunkSize, file.size);
+                    const blob = file.slice(start, end);
+                    const q = new URLSearchParams({ key: keyEl.value, uploadId, partNumber });
+                    const data = await getJson('/api/uploads/multipart/sign-part/?' + q.toString());
+                    const url = data.url;
+                    const put = await fetch(url, { method: 'PUT', body: blob });
+                    if (!put.ok) throw new Error('PUT part failed ' + partNumber);
+                    const headerETag = (put.headers.get('ETag') || put.headers.get('etag') || '');
+                    const eTag = headerETag ? headerETag.replaceAll('"','') : null;
+                    parts.push({ ETag: eTag, PartNumber: partNumber });
+                    if (prog) prog.value = Math.round((partNumber / totalParts) * 100);
+                    log('Uploaded part ' + partNumber + '/' + totalParts);
+                }
+                
+                const done = await postJson('/api/uploads/multipart/complete/', { key: keyEl.value, uploadId, parts });
+                log('Completed');
+                console.log('Upload completed:', done);
+                if (done && done.location && urlInput) { 
+                    urlInput.value = done.location; 
+                    log('URL set: ' + done.location);
+                }
+            } catch (e) {
+                console.error('Upload error:', e);
+                log('Error: ' + e.message);
+                if (uploadId) { 
+                    try { 
+                        await postJson('/api/uploads/multipart/abort/', { key: keyEl.value, uploadId }); 
+                        log('Aborted'); 
+                    } catch {} 
+                }
+            } finally {
+                if (startBtn) startBtn.disabled = false; 
+                if (abortBtn) abortBtn.disabled = true; 
+                uploadId = null;
+            }
+        }
+        
+        if (startBtn) {
+            startBtn.addEventListener('click', startUpload);
+            console.log('Upload button click listener added');
+        } else {
+            console.error('Start button not found');
+        }
+        
+        if (abortBtn) {
+            abortBtn.addEventListener('click', () => { 
+                console.log('Abort requested');
+                aborted = true; 
+            });
+        }
+        
+        if (fileEl) {
+            fileEl.addEventListener('change', (e) => {
+                const f = e.target.files && e.target.files[0];
+                if (!f || !keyEl) return;
+                const safe = f.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
+                if (!keyEl.value) keyEl.value = 'videos/' + safe;
+                console.log('File selected:', f.name, 'Key set to:', keyEl.value);
+            });
+        }
+        
+        log('Widget ready - please select a file and click Upload');
+    })();
+    </script>
+</body>
+</html>

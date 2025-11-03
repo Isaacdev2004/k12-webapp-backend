@@ -1,0 +1,22 @@
+<!-- templates/admin/mcq_import_questions.html -->
+
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+  <h1>Import Questions for MCQ: "{{ mcq.title }}"</h1>
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <input type="submit" value="Import" class="default">
+  </form>
+  <p><strong>Instructions:</strong></p>
+  <ul>
+    <li>Supported file formats: <strong>CSV, Excel (.xls, .xlsx), TXT</strong>.</li>
+    <li>Your file should contain the following columns: <strong>question, answer</strong>.</li>
+    <li>Optional columns: <strong>questionImage, options.0.text, options.1.text, options.2.text, options.3.text, options.0.image, options.1.image, options.2.image, options.3.image, weight, explanation, explanationimage</strong>.</li>
+    <li>Ensure that the data is clean and correctly formatted to prevent import errors.</li>
+  </ul>
+{% endblock %}

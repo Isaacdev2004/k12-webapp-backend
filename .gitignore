@@ -1,0 +1,99 @@
+# Byte-compiled / optimized / DLL files
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django local database
+db.sqlite3
+*.sqlite3
+
+# Media / Uploads
+media/
+uploads/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+gunicorn-logs.txt
+# Static files
+staticfiles/
+static_collected/
+.static_storage/
+.media/
+
+# Translations
+*.pot
+*.mo
+*.po
+
+# Editor swap / backup files
+*.swp
+*.swo
+*~
+
+# Virtual environments
+myvenv/
+venv/
+env/
+ENV/
+# .env
+.venv
+pythonenv*
+
+# IDE / OS
+.idea/
+*.orig
+*.DS_Store
+.vscode/
+*.sublime-workspace
+*.sublime-project
+.project
+.settings/
+.classpath
+
+# Migrations (if you really want to ignore them—usually not recommended)
+# Be careful with ignoring migrations if you do want them in version control.
+*.migrations/
+**/migrations/*
+
+# Coverage and test reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Local development settings
+# local_settings.py
+# production_settings.py
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Node modules (if using any JavaScript/Node.js)
+node_modules/
+package-lock.json
+yarn.lock

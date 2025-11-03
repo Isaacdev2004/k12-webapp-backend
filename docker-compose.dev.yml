@@ -1,0 +1,78 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - DEBUG=${DEBUG:-1}
+      - ZOOM_API_KEY=${ZOOM_API_KEY}
+      - ZOOM_API_SECRET=${ZOOM_API_SECRET}
+      - ZOOM_SECRET_TOKEN=${ZOOM_SECRET_TOKEN}
+      - ZOOM_VERIFICATION_TOKEN=${ZOOM_VERIFICATION_TOKEN}
+      - ZOOM_API_ACCOUNT_ID=${ZOOM_API_ACCOUNT_ID}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
+      - AWS_S3_REGION_NAME=${AWS_S3_REGION_NAME}
+    command: >
+      sh -c "
+        while ! nc -z db 5432; do
+          echo 'Waiting for database to be ready...'
+          sleep 2
+        done &&
+        python manage.py makemigrations --no-input &&
+        python manage.py migrate --no-input &&
+        daphne core.asgi:application --bind 0.0.0.0 --port 8000
+      "
+
+  db:
+    image: postgres:17-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aakhyaan -d aakhyaan_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    command: postgres -c 'max_connections=200'
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

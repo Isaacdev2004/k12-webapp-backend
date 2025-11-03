@@ -1,0 +1,30 @@
+FROM python:3.11-alpine
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=core.settings
+
+# Set work directory
+WORKDIR /app
+
+# Install system dependencies and build dependencies
+RUN apk add --no-cache \
+    postgresql-client \
+    postgresql-dev \
+    gcc \
+    python3-dev \
+    musl-dev \
+    libffi-dev \
+    netcat-openbsd \
+    && pip install --no-cache-dir --upgrade pip
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project
+COPY . .
+
+# Run daphne
+CMD ["daphne", "core.asgi:application", "--bind", "0.0.0.0", "--port", "8000"]

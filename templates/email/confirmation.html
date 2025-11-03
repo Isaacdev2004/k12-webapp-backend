@@ -1,0 +1,66 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% trans "Account Activated Successfully" %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{% trans "Welcome to" %} {{ site_name }}!</h1>
+    </div>
+    
+    <div class="content">
+        <p>{% trans "Hi" %} {{ user.username }},</p>
+        
+        <p>{% trans "Congratulations! Your account has been successfully activated." %}</p>
+        
+        <p>{% trans "You can now log in to your account and start using" %} {{ site_name }}.</p>
+        
+        <p style="text-align: center;">
+            <a href="{{ site_name }}/auth/login" class="button">{% trans "Login Now" %}</a>
+        </p>
+        
+        <p>{% trans "Thank you for joining our community!" %}</p>
+    </div>
+    
+    <div class="footer">
+        <p>{% trans "This is an automated email, please do not reply." %}</p>
+        <p>&copy; {{ site_name }} {% now "Y" %}</p>
+    </div>
+</body>
+</html> 

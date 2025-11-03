@@ -1,0 +1,33 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Sync Zoom Recordings' %} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url 'admin:api_zoomrecording_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {% trans 'Sync Zoom Recordings' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="form-row">
+    <h1>{% trans 'Sync Zoom Recordings' %}</h1>
+    
+    <div class="help">
+        <p>This will sync recordings from Zoom for the last 7 days and create ZoomRecording entries for any new recordings found.</p>
+        <p><strong>Note:</strong> This only creates records for the recordings. To actually download and process them, use the "Process Pending Recordings" action.</p>
+    </div>
+    
+    <form method="post" class="aligned">
+        {% csrf_token %}
+        
+        <div class="submit-row">
+            <input type="submit" value="{% trans 'Sync Recordings from Zoom' %}" class="default" />
+            <a href="../" class="button cancel-link">{% trans 'Cancel' %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
