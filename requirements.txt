@@ -24,6 +24,7 @@ daphne==4.1.2
 data-wizard==2.0.0
 defusedxml==0.8.0rc2
 diff-match-patch==20241021
+dj-database-url==2.1.0
 dj-rest-auth==6.0.0
 Django==4.2.19
 django-admin-rangefilter==0.13.2

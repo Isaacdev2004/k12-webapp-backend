@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 from import_export.formats.base_formats import CSV, XLSX
 from storages.backends.s3boto3 import S3Boto3Storage
 from boto3.s3.transfer import TransferConfig
+import dj_database_url
 
 IMPORT_FORMATS = [CSV, XLSX]
 
@@ -387,7 +388,13 @@ CHANNEL_LAYERS = {
 #     }
 # }
 
-if os.getenv('POSTGRES_HOST') and os.getenv('POSTGRES_HOST') not in ('', 'replace_me'):
+# Render provides DATABASE_URL, otherwise use individual POSTGRES_* vars
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    }
+elif os.getenv('POSTGRES_HOST') and os.getenv('POSTGRES_HOST') not in ('', 'replace_me'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
