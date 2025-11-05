@@ -55,10 +55,10 @@ pythonenv*
 .settings/
 .classpath
 
-# Migrations (if you really want to ignore them—usually not recommended)
+# Migrations - KEEP IN VERSION CONTROL (commented out to allow migrations)
 # Be careful with ignoring migrations if you do want them in version control.
-*.migrations/
-**/migrations/*
+# *.migrations/
+# **/migrations/*
 
 # Coverage and test reports
 htmlcov/
