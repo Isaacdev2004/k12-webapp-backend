@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("auth", "0012_alter_user_first_name_max_length"),
-        ("api", "0010_subjectrecordingvideo_is_auto_created"),
+        ("api", "0001_initial"),
     ]
 
     operations = [
